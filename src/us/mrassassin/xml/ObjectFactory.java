@@ -6,9 +6,9 @@ import javax.xml.bind.annotation.XmlRegistry;
 public class ObjectFactory {
 	public ObjectFactory(){}
 	
-	public Position createPosition(){
+	/*public Position createPosition(){
 		return new Position();
-	}
+	}*/
 	
 	public Assassin createAssassin(){
 		return new Assassin();
