@@ -95,7 +95,13 @@ public class AssassinServlet {
 			if(a.getLat() != null)
 			{
 				p.setLat(a.getLat());
-			}			
+			}
+			
+			if(a.getMACAddr() != null)
+			{
+				p.setMACAddr(a.getMACAddr());
+			}
+			
 			em.persist(p);
 		}
 		finally
