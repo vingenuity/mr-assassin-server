@@ -1,43 +1,47 @@
-package us.mrassassin.xml;
+/*package us.mrassassin.xml;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 @XmlRootElement
+//@Embeddable
 public class Position {
 
-	private Integer XPos;
-	private Integer YPos;
-	/**
+	Float lat;
+	Float lon;
+	*//**
 	 * @return the yPos
-	 */
+	 *//*
 	@XmlElement(nillable = true)
-	public Integer getYPos() {
-		return YPos;
+	public Float getLat() {
+		return lat;
 	}
-	/**
+	*//**
 	 * @param yPos the yPos to set
-	 */
-	public void setYPos(Integer yPos) {
-		YPos = yPos;
+	 *//*
+	public void setLat(Float yPos) {
+		lat = yPos;
 	}
-	/**
+	*//**
 	 * @return the xPos
-	 */
+	 *//*
 	@XmlElement(nillable = true)
-	public Integer getXPos() {
-		return XPos;
+	public Float getLon() {
+		return lon;
 	}
-	/**
+	*//**
 	 * @param xPos the xPos to set
-	 */
-	public void setXPos(Integer xPos) {
-		XPos = xPos;
+	 *//*
+	public void setLon(Float xPos) {
+		lon = xPos;
 	}
 	
 	@Override
 	public String toString(){
-		return "Position [XPos=" + XPos + ", YPOS=" + YPos + "]";
+		return "Position [XPos=" + XPos. + ", YPOS=" + YPos + "]";
 	}
 	
 }
+*/
