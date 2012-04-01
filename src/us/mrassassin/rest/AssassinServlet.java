@@ -60,6 +60,84 @@ public class AssassinServlet {
 	}
 	
 	@POST
+	@Path("get/leaderboard/bymoney")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public List<Assassin> getLeadersByMoney(String num){
+		EntityManager em = EMF.get().createEntityManager();
+		String s = "SELECT x FROM Assassin x ORDER BY money DESC LIMIT ";
+		s.concat(num);
+		List<Assassin> ls = new ArrayList<Assassin>();
+		try
+		{
+			int limit = Integer.parseInt(num);
+			Query q = em.createQuery(s);
+			List<Assassin> res = (List<Assassin>)q.getResultList();
+			for(int k = 0; k < limit; k++)
+			{				
+				ls.add(res.get(k));
+			}
+		}catch(Exception e)
+		{
+			
+		}
+		
+		return ls;
+	}
+	
+	@POST
+	@Path("get/leaderboard/bybounty")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public List<Assassin> getLeadersByBounty(String num){
+		EntityManager em = EMF.get().createEntityManager();
+		String s = "SELECT x FROM Assassin x ORDER BY bounty DESC LIMIT ";
+		s.concat(num);
+		List<Assassin> ls = new ArrayList<Assassin>();
+		try
+		{
+			int limit = Integer.parseInt(num);
+			Query q = em.createQuery(s);
+			List<Assassin> res = (List<Assassin>)q.getResultList();
+			for(int k = 0; k < limit; k++)
+			{				
+				ls.add(res.get(k));
+			}
+		}catch(Exception e)
+		{
+			
+		}
+		
+		return ls;
+	}
+	
+	@POST
+	@Path("get/leaderboard/bykills")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public List<Assassin> getLeadersByKills(String num){
+		EntityManager em = EMF.get().createEntityManager();
+		String s = "SELECT x FROM Assassin x ORDER BY kills DESC LIMIT ";
+		s.concat(num);
+		List<Assassin> ls = new ArrayList<Assassin>();
+		try
+		{
+			int limit = Integer.parseInt(num);
+			Query q = em.createQuery(s);
+			List<Assassin> res = (List<Assassin>)q.getResultList();
+			for(int k = 0; k < limit; k++)
+			{				
+				ls.add(res.get(k));
+			}
+		}catch(Exception e)
+		{
+			
+		}
+		
+		return ls;
+	}
+	
+	@POST
 	@Path("get/assassins")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes({MediaType.TEXT_PLAIN})
@@ -126,6 +204,10 @@ public class AssassinServlet {
 			if(a.getMACAddr() != null)
 			{
 				p.setMACAddr(a.getMACAddr());
+			}
+			if(a.getKills() != null)
+			{
+				p.setKills(a.getKills());
 			}
 			
 			em.persist(p);
@@ -246,9 +328,11 @@ public class AssassinServlet {
 				Assassin killed = (Assassin)tQ.getSingleResult();
 				Assassin l = a.get(0);
 				l.setMoney(l.getMoney() + killed.getBounty());
+				l.setKills(l.getKills() + 1);
 				killed.setBounty(killed.getBounty() - 200);				
 				em.persist(l);
 				em.persist(killed);
+				//TODO: and push code here
 				em.close();
 				return getNewTarget(l);
 			}
