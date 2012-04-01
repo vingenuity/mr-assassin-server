@@ -41,9 +41,15 @@ public class Assassin {
 	List<String> following;
 	String target;
 	Integer bounty;
+	Integer kills;
 	
 	
-	
+	public Integer getKills() {
+		return kills;
+	}
+	public void setKills(Integer kills) {
+		this.kills = kills;
+	}
 	/**
 	 * @return the tag
 	 */
