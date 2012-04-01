@@ -29,9 +29,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 @Path("/")
 public class AssassinServlet {
 	@GET
@@ -60,6 +57,35 @@ public class AssassinServlet {
 		}
 		
 		return ls;
+	}
+	
+	@POST
+	@Path("get/assassins")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes({MediaType.TEXT_PLAIN})
+	public Assassin getAssassin(String tag){
+		Assassin ret;
+		EntityManager em = EMF.get().createEntityManager();
+		try{
+			Query q = em.createQuery("SELECT x from Assassin x where x.tag = \"".concat(tag).concat("\""));
+			ret = (Assassin)q.getSingleResult();
+
+			em.persist(ret);
+		}
+		finally{
+			em.close();
+		}
+		
+		return ret;
+	}
+	
+	@POST
+	@Path("get/target")
+	@Produces(MediaType.APPLICATION_XML)
+	@Consumes({MediaType.TEXT_PLAIN})
+	public Assassin getTarget(String attackerTag){
+		String targetTag = getAssassin(attackerTag).getTarget();
+		return getAssassin(targetTag);
 	}
 	
 	@POST
