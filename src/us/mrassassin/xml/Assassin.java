@@ -35,7 +35,6 @@ public class Assassin {
 	}
 	String tag;
 	Integer money;
-	//Position position;
 	Float lat;
 	Float lon;
 	String MACAddr;
