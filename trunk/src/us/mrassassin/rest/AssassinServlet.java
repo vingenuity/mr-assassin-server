@@ -1,5 +1,7 @@
 package us.mrassassin.rest;
 
+import java.util.Random;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -218,7 +220,7 @@ public class AssassinServlet {
 		}
 		
 	}
-	
+
 	@POST
 	@Path("get/newtarget")
 	@Consumes({MediaType.APPLICATION_XML})
@@ -230,23 +232,65 @@ public class AssassinServlet {
 		{		
 			Query q = em.createQuery("SELECT x from Assassin x where x.tag = \"".concat(player.getTag()).concat("\""));
 			Assassin p = (Assassin)q.getSingleResult();
+			Assassin ret = null;
+			
+			//List<Assassin> list = test();
 			Query newTargetQ = em.createQuery("SELECT x from Assassin x where x.tag <> \"".concat(player.getTag()).concat("\" and x.tag <> \"").concat(p.getTarget()).concat("\""));
-			List<Assassin> potentials = newTargetQ.getResultList();
+			@SuppressWarnings("unchecked")
+			List<Assassin> list = newTargetQ.getResultList();
+			int max = 0;
+			for(int i = 0; i < list.size(); i++)
+			{
+				if(list.get(i).getBounty() == null){
+					//list.remove(i);
+					continue;
+				}					
+				else 
+					max += list.get(i).getBounty();
+			}
+			Random generator = new Random();
+			
+			while(true){
+				int select = generator.nextInt(max);
+				int temp = 0;
+				
+				for(int i = 0; i < list.size(); i++)
+				{
+					
+					if(list.get(i).getBounty() != null)
+						temp += list.get(i).getBounty();
+					if(temp >= select){
+						ret = list.get(i);
+						break;
+					}
+				}
+				
+				//don't target yourself!
+				if(ret.getTag() != p.getTag())
+					break;
+			}
+			
+			/*
+			Query newTargetQ2 = em.createQuery("SELECT x from Assassin x where x.tag <> \"".concat(player.getTag()).concat("\" and x.tag <> \"").concat(p.getTarget()).concat("\""));
+			List<Assassin> potentials = newTargetQ2.getResultList();
 			Assassin target = null;
 			if(potentials.size() > 0)
 			{									
 				target = potentials.get(0);					
 			}
+			*/
 			
-			if(target != null)
-			{				
+			if(ret != null) //if(target != null)
+			{		
 				Query upd = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"".concat(p.getTarget()).concat("\""));
+				@SuppressWarnings("unchecked")
 				List<Assassin> old = upd.getResultList();
 				if(old.size() > 0)
 				{
 					old.get(0).setFollowing(new ArrayList<String>());
 					em.persist(old.get(0));
-					/*List<String> s = old.get(0).getFollowing();
+					List<String> s = old.get(0).getFollowing();
+					
 					for(int k = 0; k < s.size(); k++)
 					{
 						if(p.getTarget().equals(s.get(k)))
@@ -256,23 +300,21 @@ public class AssassinServlet {
 							o.setFollowing(s);
 							em.persist(o);
 						}
-					}*/
+					}
 				}
-
-				
-				p.setTarget(target.getTag());
+				p.setTarget(ret.getTag());
+				//p.setTarget(target.getTag());
 				em.merge(p);
-				List<String> l = target.getFollowing();
+				List<String> l = ret.getFollowing();
+				//List<String> l = target.getFollowing();
 				l.add(player.getTag());
-				target.setFollowing(l);
-				em.merge(target);
-				return target;
+				ret.setFollowing(l);
+				//target.setFollowing(l);
+				em.merge(ret);
+				//em.merge(target);
+				return ret;
+				//return target;
 			}
-			
-		}
-		catch(Exception e)
-		{
-			Integer brreak = 1;
 		}
 		finally
 		{
@@ -286,13 +328,20 @@ public class AssassinServlet {
 	@POST
 	@Path("add/assassin")
 	@Consumes({MediaType.APPLICATION_XML})
-	public void addAssassin(Assassin toAdd)
-	{
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addAssassin(Assassin toAdd) throws Exception{
 		EntityManager em = EMF.get().createEntityManager();
-		try{		
+		try{
+			Assassin temp = null;
+			Query q = em.createQuery("SELECT x from Assassin x where x.tag = \"".concat(toAdd.getTag()).concat("\""));
+			List<Assassin> ls = q.getResultList();
+			if(ls.size() > 0)
+			{
+				throw new Exception("Duplicate tag!");
+			}
 			if(toAdd.getMoney() == null)
 			{							
-				toAdd.setMoney(0);
+				toAdd.setMoney(500);
 			}
 			if(toAdd.getBounty() == null)
 			{
@@ -300,14 +349,14 @@ public class AssassinServlet {
 			}			
 			em.persist(toAdd);
 		}
-		catch(Exception e)
-		{
-			Integer brreak = 1;
+		catch(Exception e){
+			return "Failed to add ".concat(toAdd.getTag()).concat("! ").concat(e.getMessage());
 		}
-		finally
-		{
+		finally{
 			em.close();
 		}
+		
+		return "Succuessfully added ".concat(toAdd.getTag()).concat("!");
 	}
 	
 	@POST
@@ -322,8 +371,11 @@ public class AssassinServlet {
 			em = EMF.get().createEntityManager();
 			Query query = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"".concat(murderer.getTag()).concat("\""));
 			List<Assassin> a = query.getResultList();
-			if(a.size() > 0)
-			{				
+			//Assassin l = getAssassin(murderer.getTag());
+			if(a.size() > 0) 
+			//if(l != null)
+			{		
+				
 				Query tQ = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"" + a.get(0).getTarget() + "\"");
 				Assassin killed = (Assassin)tQ.getSingleResult();
 				Assassin l = a.get(0);
@@ -335,6 +387,19 @@ public class AssassinServlet {
 				//TODO: and push code here
 				em.close();
 				return getNewTarget(l);
+				
+				/*
+				Query tQ = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"" + l.getTarget() + "\"");
+				Assassin killed = (Assassin)tQ.getSingleResult();
+				l.setMoney(l.getMoney() + killed.getBounty());
+				l.setKills(l.getKills() + 1);
+				killed.setBounty(killed.getBounty() - 200);				
+				em.persist(l);
+				em.persist(killed);
+				//TODO: and push code here
+				em.close();
+				return getNewTarget(l);
+				*/
 			}
 		}
 		finally
