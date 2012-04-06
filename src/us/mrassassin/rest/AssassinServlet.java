@@ -384,13 +384,16 @@ public class AssassinServlet {
 				
 				int response;
 				//Notify of death
-				try
+				if(killed.getRegID() != null)
 				{
-					response = MessageUtil.sendMessage(AuthenticationUtil.getToken(SecureStorage.USER, SecureStorage.PASSWORD), "APA91bEBV69w8wMXxuz6ddK8KIn-Xq0_x5qI8glWIEkYLZLHzyN2RB1E93J0eQxbhkOM4460nx2Mp5UhXKrZdLddIWcNazfmeC772GQxuixMIy2m9TQd0yJ5nEFX7fNSR7ySyaQCH2xEHauoOn85ttaA-Caj7NKkP1N7LmrI36m1B6JsHd-nAo4", "killed");
-				}
-				catch(Exception e)
-				{
-					
+					try
+					{
+						response = MessageUtil.sendMessage(AuthenticationUtil.getToken(SecureStorage.USER, SecureStorage.PASSWORD), killed.getRegID(), "killed");
+					}
+					catch(Exception e)
+					{
+						
+					}
 				}
 				
 				Assassin l = a.get(0);
