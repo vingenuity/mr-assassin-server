@@ -43,8 +43,7 @@ public class Assassin {
 	Integer bounty;
 	Integer kills;
 	private String regID;
-	
-	
+
 	public Integer getKills() {
 		return kills;
 	}

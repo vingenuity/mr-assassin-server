@@ -2,8 +2,8 @@ package us.mrassassin.c2dm;
 
 import java.io.IOException;
 
-//import us.mrassassin.c2dm.AuthenticationUtil;
-/*
+import us.mrassassin.c2dm.AuthenticationUtil;
+
 public class GetAuthenticationToken {
 
 	public static void main(String[] args) throws IOException {
@@ -12,4 +12,3 @@ public class GetAuthenticationToken {
 		System.out.println(token);
 	}
 }
-*/

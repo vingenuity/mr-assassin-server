@@ -76,11 +76,19 @@ public class MessageUtil {
 				                } 
 		return responseCode;
 	}
-
+	/*
+	private static class CustomizedHostnameVerifier implements HostnameVerifier {
+=======
 	/*private static class CustomizedHostnameVerifier implements HostnameVerifier {
+>>>>>>> .r8
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
 		}
 	}*/
+	private static class CustomizedHostnameVerifier{
+		public boolean verify(String hostname) {
+			return true;
+		}
+	}
 }
 

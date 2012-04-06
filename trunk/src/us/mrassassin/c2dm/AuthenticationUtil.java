@@ -1,5 +1,4 @@
 package us.mrassassin.c2dm;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,8 +29,7 @@ public class AuthenticationUtil {
 		con.setUseCaches(false);
 		con.setDoOutput(true);
 		con.setRequestMethod("POST");
-		con.setRequestProperty("Content-Type",
-				"application/x-www-form-urlencoded");
+		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		con.setRequestProperty("Content-Length", Integer.toString(data.length));
 
 		// Issue the HTTP POST request
