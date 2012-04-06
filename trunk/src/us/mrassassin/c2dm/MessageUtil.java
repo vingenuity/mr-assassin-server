@@ -5,11 +5,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.io.*;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection; //added because of problem with HttpsURLConnection
 import javax.net.ssl.SSLSession;
-/*
+
 public class MessageUtil {
 	private final static String AUTH = "authentication";
 
@@ -58,13 +59,28 @@ public class MessageUtil {
 		out.close();
 
 		int responseCode = conn.getResponseCode();
+		String rep = conn.getResponseMessage();
+		//conn.getInputStream().
+		String messageId;
+		String error;
+		BufferedReader reader = new BufferedReader(new
+		InputStreamReader(conn.getInputStream()));
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+		if (line.startsWith("id=")) {
+		   messageId = line.substring(3);
+		} else if (line.startsWith("Error=")){
+		  error = line.substring(6);
+
+				                        }
+				                } 
 		return responseCode;
 	}
 
-	private static class CustomizedHostnameVerifier implements HostnameVerifier {
+	/*private static class CustomizedHostnameVerifier implements HostnameVerifier {
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
 		}
-	}
+	}*/
 }
-*/
+

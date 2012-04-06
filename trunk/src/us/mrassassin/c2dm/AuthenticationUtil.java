@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-/*
+
 public class AuthenticationUtil {
 	private AuthenticationUtil() {
 		// Util class cannot get instanziated
@@ -55,4 +55,3 @@ public class AuthenticationUtil {
 		return auth_key;
 	}
 }
-*/

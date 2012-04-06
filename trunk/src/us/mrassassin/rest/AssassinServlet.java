@@ -1,6 +1,7 @@
 package us.mrassassin.rest;
 
 import java.util.Random;
+import us.mrassassin.c2dm.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,6 +14,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import us.mrassassin.c2dm.MessageUtil;
+import us.mrassassin.c2dm.SecureStorage;
 import us.mrassassin.xml.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
@@ -211,6 +215,10 @@ public class AssassinServlet {
 			{
 				p.setKills(a.getKills());
 			}
+			if(a.getRegID() != null)
+			{
+				p.setRegID(a.getRegID());
+			}
 			
 			em.persist(p);
 		}
@@ -250,25 +258,19 @@ public class AssassinServlet {
 			}
 			Random generator = new Random();
 			
-			while(true){
-				int select = generator.nextInt(max);
-				int temp = 0;
+			
+			int select = generator.nextInt(max);
+			int temp = 0;
 				
-				for(int i = 0; i < list.size(); i++)
-				{
-					
-					if(list.get(i).getBounty() != null)
-						temp += list.get(i).getBounty();
-					if(temp >= select){
-						ret = list.get(i);
-						break;
-					}
-				}
-				
-				//don't target yourself!
-				if(ret.getTag() != p.getTag())
+			for(int i = 0; i < list.size(); i++)
+			{				
+				if(list.get(i).getBounty() != null)
+					temp += list.get(i).getBounty();
+				if(temp >= select){
+					ret = list.get(i);
 					break;
-			}
+				}
+			}			
 			
 			/*
 			Query newTargetQ2 = em.createQuery("SELECT x from Assassin x where x.tag <> \"".concat(player.getTag()).concat("\" and x.tag <> \"").concat(p.getTarget()).concat("\""));
@@ -346,7 +348,8 @@ public class AssassinServlet {
 			if(toAdd.getBounty() == null)
 			{
 				toAdd.setBounty(500);
-			}			
+			}
+			toAdd.setKills(0);
 			em.persist(toAdd);
 		}
 		catch(Exception e){
@@ -378,8 +381,25 @@ public class AssassinServlet {
 				
 				Query tQ = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"" + a.get(0).getTarget() + "\"");
 				Assassin killed = (Assassin)tQ.getSingleResult();
+				
+				int response;
+				//Notify of death
+				try
+				{
+					response = MessageUtil.sendMessage(AuthenticationUtil.getToken(SecureStorage.USER, SecureStorage.PASSWORD), "APA91bEBV69w8wMXxuz6ddK8KIn-Xq0_x5qI8glWIEkYLZLHzyN2RB1E93J0eQxbhkOM4460nx2Mp5UhXKrZdLddIWcNazfmeC772GQxuixMIy2m9TQd0yJ5nEFX7fNSR7ySyaQCH2xEHauoOn85ttaA-Caj7NKkP1N7LmrI36m1B6JsHd-nAo4", "killed");
+				}
+				catch(Exception e)
+				{
+					
+				}
+				
 				Assassin l = a.get(0);
 				l.setMoney(l.getMoney() + killed.getBounty());
+				if(l.getKills() == null)
+				{
+					l.setKills(0);
+				}
+				
 				l.setKills(l.getKills() + 1);
 				killed.setBounty(killed.getBounty() - 200);				
 				em.persist(l);
