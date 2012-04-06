@@ -2,8 +2,7 @@ package us.mrassassin.c2dm;
 
 import java.io.IOException;
 
-//import us.mrassassin.c2dm.MessageUtil;
-
+import us.mrassassin.c2dm.MessageUtil;
 
 public class SendMessageToDevice {
 
