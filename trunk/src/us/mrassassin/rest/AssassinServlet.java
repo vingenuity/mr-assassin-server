@@ -167,9 +167,15 @@ public class AssassinServlet {
 	@Path("get/target")
 	@Produces(MediaType.APPLICATION_XML)
 	@Consumes({MediaType.TEXT_PLAIN})
-	public Assassin getTarget(String attackerTag){
-		String targetTag = getAssassin(attackerTag).getTarget();
-		return getAssassin(targetTag);
+	public List<Assassin> getTarget(String attackerTag){
+		//String targetTag = getAssassin(attackerTag).getTarget();
+		//return getAssassin(targetTag);
+		
+		List<Assassin> ret = new ArrayList<Assassin>();
+		ret.add(getAssassin(attackerTag));
+		ret.add(getAssassin(ret.get(0).getTarget()));
+		
+		return ret;
 	}
 	
 	@POST
