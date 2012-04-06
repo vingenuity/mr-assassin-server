@@ -154,7 +154,7 @@ public class AssassinServlet {
 			Query q = em.createQuery("SELECT x from Assassin x where x.tag = \"".concat(tag).concat("\""));
 			ret = (Assassin)q.getSingleResult();
 
-			em.persist(ret);
+			//em.persist(ret);
 		}
 		finally{
 			em.close();
