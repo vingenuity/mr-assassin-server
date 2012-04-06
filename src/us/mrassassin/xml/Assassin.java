@@ -42,6 +42,7 @@ public class Assassin {
 	String target;
 	Integer bounty;
 	Integer kills;
+	private String regID;
 	
 	
 	public Integer getKills() {
@@ -166,5 +167,17 @@ public class Assassin {
 	 */
 	public void setLon(Float lon) {
 		this.lon = lon;
+	}
+	/**
+	 * @return the regID
+	 */
+	public String getRegID() {
+		return regID;
+	}
+	/**
+	 * @param regID the regID to set
+	 */
+	public void setRegID(String regID) {
+		this.regID = regID;
 	}
 }

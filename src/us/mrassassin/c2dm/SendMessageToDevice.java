@@ -4,7 +4,7 @@ import java.io.IOException;
 
 //import us.mrassassin.c2dm.MessageUtil;
 
-/*
+
 public class SendMessageToDevice {
 
 	public static void sendString(String send) throws IOException {
@@ -15,4 +15,4 @@ public class SendMessageToDevice {
 		System.out.println(responseCode);
 	}
 }
-*/
+
