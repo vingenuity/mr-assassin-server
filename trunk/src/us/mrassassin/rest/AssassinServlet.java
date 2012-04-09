@@ -190,6 +190,9 @@ public class AssassinServlet {
 			Assassin p = (Assassin)q.getSingleResult();
 			if(a.getBounty() != null)
 			{
+				if(a.getBounty() <= 300){
+					a.setBounty(300);
+				}
 				p.setBounty(a.getBounty());
 			}
 			
@@ -200,6 +203,9 @@ public class AssassinServlet {
 			
 			if(a.getMoney() != null)
 			{
+				if(a.getMoney() < 100){
+					a.setMoney(100);
+				}
 				p.setMoney(a.getMoney());
 			}
 			
@@ -410,25 +416,20 @@ public class AssassinServlet {
 				}
 				
 				l.setKills(l.getKills() + 1);
-				killed.setBounty(killed.getBounty() - 200);				
-				em.persist(l);
-				em.persist(killed);
-				//TODO: and push code here
-				em.close();
-				return getNewTarget(l);
+				if(killed.getBounty() > 200)
+				{
+					killed.setBounty(killed.getBounty() - 200);	
+				}
+				else
+				{
+					killed.setBounty(200);
+				}
 				
-				/*
-				Query tQ = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"" + l.getTarget() + "\"");
-				Assassin killed = (Assassin)tQ.getSingleResult();
-				l.setMoney(l.getMoney() + killed.getBounty());
-				l.setKills(l.getKills() + 1);
-				killed.setBounty(killed.getBounty() - 200);				
 				em.persist(l);
 				em.persist(killed);
 				//TODO: and push code here
 				em.close();
 				return getNewTarget(l);
-				*/
 			}
 		}
 		finally
