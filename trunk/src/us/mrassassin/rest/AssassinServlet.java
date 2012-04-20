@@ -462,6 +462,32 @@ public class AssassinServlet {
 			
 			Query t = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"".concat(res.getTarget()).concat("\"") );
 			Assassin ret = (Assassin)t.getSingleResult();
+			
+			//Check if we're within 30 m for warning
+			if(ret.getRegID() != null)
+			{
+				double latitude = ret.getLat() - res.getLat();
+				double longitude = ret.getLon() - res.getLon();
+				
+				latitude /= 57.29577951;
+				longitude /= 57.29577951;
+				
+				double med = Math.pow(Math.sin(latitude / 2.0), 2) + Math.cos(res.getLat()) * Math.cos(ret.getLat()) * Math.pow(Math.sin(longitude / 2.0), 2);
+				
+				int response;
+				try
+				{			
+					if(2 * Math.atan2(Math.sqrt(med), Math.sqrt(1 - med)) * 6372.8 * 1000.0 < 30.0)
+					{
+						//Within 30 m so send warning
+						response = MessageUtil.sendMessage(AuthenticationUtil.getToken(SecureStorage.USER, SecureStorage.PASSWORD), ret.getRegID(), "warning");
+					}
+				}catch(Exception e)
+				{				
+				
+				}
+			}
+			
 			em.persist(res);
 			return ret;
 		}
