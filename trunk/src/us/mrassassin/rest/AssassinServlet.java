@@ -255,7 +255,18 @@ public class AssassinServlet {
 			Assassin ret = null;
 			
 			//List<Assassin> list = test();
-			Query newTargetQ = em.createQuery("SELECT x from Assassin x where x.tag <> \"".concat(player.getTag()).concat("\" and x.tag <> \"").concat(p.getTarget()).concat("\""));
+			Query newTargetQ;
+			
+			if(p.getTarget() == null)
+			{
+				newTargetQ = em.createQuery("SELECT x from Assassin x where x.tag <> \"".concat(player.getTag()).concat("\""));
+			}
+			else
+			{				
+				newTargetQ = em.createQuery("SELECT x from Assassin x where x.tag <> \"".concat(player.getTag()).concat("\" and x.tag <> \"").concat(p.getTarget()).concat("\""));
+			}
+			
+			 
 			@SuppressWarnings("unchecked")
 			List<Assassin> list = newTargetQ.getResultList();
 			int max = 0;
@@ -296,7 +307,7 @@ public class AssassinServlet {
 			
 			if(ret != null) //if(target != null)
 			{		
-				Query upd = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"".concat(p.getTarget()).concat("\""));
+				/*Query upd = em.createQuery("SELECT x FROM Assassin x WHERE x.tag = \"".concat(p.getTarget()).concat("\""));
 				@SuppressWarnings("unchecked")
 				List<Assassin> old = upd.getResultList();
 				if(old.size() > 0)
@@ -315,16 +326,16 @@ public class AssassinServlet {
 							em.persist(o);
 						}
 					}
-				}
+				}*/
 				p.setTarget(ret.getTag());
 				//p.setTarget(target.getTag());
 				em.merge(p);
-				List<String> l = ret.getFollowing();
+				//List<String> l = ret.getFollowing();
 				//List<String> l = target.getFollowing();
-				l.add(player.getTag());
-				ret.setFollowing(l);
+				//l.add(player.getTag());
+				//ret.setFollowing(l);
 				//target.setFollowing(l);
-				em.merge(ret);
+				//em.merge(ret);
 				//em.merge(target);
 				return ret;
 				//return target;
